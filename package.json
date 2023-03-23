@@ -1,10 +1,10 @@
 {
-  "name": "spore-api",
+  "name": "sporepedia",
   "version": "1.0.0",
-  "description": "access the spore API in your node app",
-  "main": "spore-api.js",
+  "description": "Access the Sporepedia API in your node app. Derived from the official Spore REST API (http://www.spore.com/comm/developer/samples/).",
+  "main": "sporepedia.js",
   "scripts": {
-    "test": "nodemon -e js,html,njk,css ./test.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
