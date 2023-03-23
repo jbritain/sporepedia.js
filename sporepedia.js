@@ -12,7 +12,7 @@ async function getXML(url, type){
     }
 
     const fullUrl = `${APIBase}/${type}${url}`
-    const res = await axios.get().catch(e => {
+    const res = await axios.get(fullUrl).catch(e => {
         let error = e.toJSON();
         throw new Error(`Server returned status ${error.status} for URL ${fullUrl}`);
     });
@@ -29,16 +29,16 @@ async function getXML(url, type){
 /* --------------------- REST --------------------- */
 /**
  * Get daily stats about Spore.com
- * @returns
+ * @returns {String} JavaScript object containing some stats
  */
-exports.stats = async () => await getXML("/stats");
+exports.stats = async () => await getXML("/stats", "rest");
 
 
 
 /**
  * Get various stats like height, diet, abilities etc. for a creature
  * @param {String} assetID The asset ID of the creature
- * @returns 
+ * @returns {String} JavaScript object containing creature stats
  */
 exports.creatureStats = async assetID => await getXML(`/creature/${assetID}`, "rest");
 
@@ -48,7 +48,7 @@ exports.creatureStats = async assetID => await getXML(`/creature/${assetID}`, "r
 /**
  * Get profile pic, tagline, user id and creation date
  * @param {String} username 
- * @returns 
+ * @returns {String} JavaScript object containg user data
  */
 exports.user = async username => await getXML(`/user/${username}`, "rest");
 
@@ -57,14 +57,14 @@ exports.user = async username => await getXML(`/user/${username}`, "rest");
  * @param {String} username
  * @param {Number} [startIndex=0] The start index - i.e if it was 5 the first 5 assets would be skipped
  * @param {Number} [length=100] The number of assets to fetch
- * @returns 
+ * @returns {String} JavaScript object containing list of assets
  */
 exports.userAssets = async (username, startIndex=0, length=100) => await getXML(`/assets/user/${username}/${startIndex}/${length}`, "rest")
 
 /**
  * Get id, name, tags, subscription count, rating etc. for Sporecasts subscribed to by a user
  * @param {*} username 
- * @returns 
+ * @returns {String} JavaScript object containing info for Sporecasts
  */
 exports.userSporecasts = async username => await getXML(`/sporecasts/${username}`, "rest");
 
@@ -73,7 +73,7 @@ exports.userSporecasts = async username => await getXML(`/sporecasts/${username}
  * @param {String} username 
  * @param {Number} [startIndex=0] The start index - i.e if it was 5 the first 5 achievements would be skipped
  * @param {Number} [length=100] The number of achievements to fetch
- * @returns 
+ * @returns {String} JavaScript object containing list of achievements
  */
 exports.userAchievements = async (username, startIndex=0, length=100) => await getXML(`/assets/achievements/${username}/${startIndex}/${length}`, "rest")
 
@@ -82,7 +82,7 @@ exports.userAchievements = async (username, startIndex=0, length=100) => await g
  * @param {String} username 
  * @param {Number} startIndex The start index - i.e if it was 5 the first 5 buddies would be skipped
  * @param {Number} length The number of buddies to fetch
- * @returns 
+ * @returns {String} JavaScript object containing a list of buddies
  */
 exports.userBuddies = async (username, startIndex=0, length=100) => await getXML(`/users/buddies/${username}/${startIndex}/${length}`, "rest")
 
@@ -91,7 +91,7 @@ exports.userBuddies = async (username, startIndex=0, length=100) => await getXML
  * @param {String} username 
  * @param {Number} startIndex The start index - i.e if it was 5 the first 5 subscribers would be skipped
  * @param {Number} length The number of subscribers to fetch
- * @returns 
+ * @returns {String} JavaScript object containing list of subscribers
  */
 exports.userSubscribers = async (username, startIndex=0, length=100) => await getXML(`/users/subscribers/${username}/${startIndex}/${length}`, "rest")
 
@@ -100,7 +100,7 @@ exports.userSubscribers = async (username, startIndex=0, length=100) => await ge
  * @param {*} sporecastID ID of sporecast
  * @param {Number} [startIndex=0] The start index - i.e if it was 5 the first 5 sporecasts would be skipped
  * @param {Number} [length=100] The number of sporecasts to fetch
- * @returns 
+ * @returns {String} JavaScript object containing info for assets
  */
 exports.sporecastAssets = async (sporecastID, startIndex=0, length=100) => await getXML(`/assets/sporecast/${sporecastID}/${startIndex}/${length}`, "rest")
 
@@ -109,7 +109,7 @@ exports.sporecastAssets = async (sporecastID, startIndex=0, length=100) => await
 /**
  * For a given asset id, get name, description, tags, 10 latest comments, type, parent, rating, creation date and author name/id
  * @param {*} assetID 
- * @returns 
+ * @returns {String} JavaScript object containing info for an asset
  */
 exports.asset = async assetID => await getXML(`/asset/${assetID}`, "rest")
 
@@ -118,7 +118,7 @@ exports.asset = async assetID => await getXML(`/asset/${assetID}`, "rest")
  * @param {*} assetID
  * @param {Number} [startIndex=0] The start index - i.e if it was 5 the first 5 comments would be skipped
  * @param {Number} [length=100] The number of comments to fetch
- * @returns 
+ * @returns {String} JavaScript object containing list of comments
  */
 exports.assetComments = async (assetID, startIndex=0, length=100) => await getXML(`/comments/${assetID}/${startIndex}/${length}`, "rest")
 
@@ -130,7 +130,7 @@ exports.assetComments = async (assetID, startIndex=0, length=100) => await getXM
  * Get XML and PNGs for an asset ID.
  * @param {('model'|'image'|'thumb')} dataType 'model' returns the XML for a spore model, 'thumb' returns the URL to a smaller thumbnail of the asset, 'image' returns the URL to a full size image of the asset
  * @param {String} assetID 
- * @returns 
+ * @returns {String} If dataType is 'model', returns an XML string with the model info. Otherwise returns the URL of the image
  */
 exports.assetData = async (dataType, assetID) => {
 
@@ -157,7 +157,7 @@ exports.assetData = async (dataType, assetID) => {
 /**
  * Get the official Spore achievement icon for a given achievement id
  * @param {*} achievementID 
- * @returns 
+ * @returns {String} The URL of the achievement icon
  */
 exports.achievementIcon = async (achievementID) => {return `${APIBase}/static/war/images/achievements/${achievementID}.png`}
 
@@ -168,7 +168,7 @@ exports.achievementIcon = async (achievementID) => {return `${APIBase}/static/wa
  * @param {("TOP_RATED" | "TOP_RATED_NEW" | "NEWEST" | "FEATURED" | "RANDOM" | "CUTE_AND_CREEPY")} viewType 
  * @param {*} startIndex The start index - i.e if it was 5 the first 5 creations would be skipped
  * @param {*} length The number of creations to fetch
- * @returns 
+ * @returns {String}
  */
 exports.search = async (viewType, startIndex, length) => {
     if (!["TOP_RATED", "TOP_RATED_NEW", "NEWEST", "FEATURED", "RANDOM", "CUTE_AND_CREEPY"].includes(viewType)){
@@ -177,3 +177,7 @@ exports.search = async (viewType, startIndex, length) => {
 
     return getXML(`${APIBase}/atom/assets/view/${viewType}/${startIndex}/${length}`);
 }
+
+(async () => {
+    console.log(await exports.stats())
+})()
